@@ -132,6 +132,18 @@
       font-size: 0.75em;
       font-weight: 600;
     }
+    .user-card .distance {
+      display: inline-block;
+      float: right;
+      clear: right;
+      background: #ebf8ff;
+      color: #2b6cb0;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.7em;
+      font-weight: 600;
+      margin-top: 4px;
+    }
     .match-status {
       text-align: center;
       padding: 8px;
@@ -554,10 +566,12 @@ function listenUsers() {
   unsubUsers = db.collection('users').onSnapshot(snap => {
     allUsers = [];
     snap.forEach(doc => {
-      if (doc.id !== currentUser.id) {
-        const data = doc.data();
-        allUsers.push({ id: doc.id, ...data });
-      }
+      if (doc.id === currentUser.id) return;
+      const data = doc.data();
+      if (data.name === currentUser.name &&
+          data.affiliation === currentUser.affiliation &&
+          data.aikotoba === currentUser.aikotoba) return;
+      allUsers.push({ id: doc.id, ...data });
     });
     renderDashboard();
     checkProximityNotifications();
@@ -714,7 +728,14 @@ function renderDashboard() {
 
   container.innerHTML = users.map(u => {
     const simPercent = Math.round(u.sim * 100);
-    const distText = u.dist < Infinity ? (u.dist < 1000 ? Math.round(u.dist) + 'm' : (u.dist/1000).toFixed(1) + 'km') : '';
+    let distText = '';
+    if (u.dist < Infinity) {
+      if (u.dist < 10) distText = 'すぐ近く';
+      else if (u.dist < 50) distText = '約' + Math.round(u.dist/10)*10 + 'm';
+      else if (u.dist < 200) distText = '約' + Math.round(u.dist/50)*50 + 'm';
+      else if (u.dist < 1000) distText = '約' + Math.round(u.dist/100)*100 + 'm';
+      else distText = '約' + (u.dist/1000).toFixed(1) + 'km';
+    }
     const matchReq = matchRequests.find(r => r.participants && r.participants.includes(u.id));
     const isMatched = matches.some(m => m.participants && m.participants.includes(u.id));
 
@@ -740,7 +761,8 @@ function renderDashboard() {
     }
 
     return '<div class="user-card">' +
-      '<span class="similarity">' + simPercent + '% 類似' + (distText ? ' / ' + distText : '') + '</span>' +
+      '<span class="similarity">' + simPercent + '% 類似</span>' +
+      (distText ? '<span class="distance">' + distText + '</span>' : '') +
       '<div class="name">' + escHtml(u.name) + '</div>' +
       '<span class="affiliation">' + escHtml(u.affiliation) + '</span>' +
       '<div class="interests">' + escHtml(u.interests) + '</div>' +
