@@ -22,8 +22,25 @@
       z-index: 100;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-    .header h1 { font-size: 1.4em; }
-    .header small { opacity: 0.85; font-size: 0.75em; }
+    .header h1 { font-size: 1.4em; display: inline; }
+    .header small { opacity: 0.85; font-size: 0.75em; display: block; }
+    .header-profile-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header-profile-btn:hover { background: rgba(255,255,255,0.3); }
     .screen { display: none; padding: 20px; max-width: 480px; margin: 0 auto; }
     .screen.active { display: block; }
     .card {
@@ -74,30 +91,25 @@
       width: 100%;
     }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-sm {
-      padding: 8px 16px;
+    .btn-sm { padding: 8px 16px; font-size: 0.85em; }
+    .btn-outline { background: white; border: 1.5px solid #667eea; color: #667eea; }
+    .btn-success { background: #48bb78; color: white; }
+    .btn-danger { background: #fc8181; color: white; }
+    .section-title {
       font-size: 0.85em;
+      font-weight: 700;
+      color: #a0aec0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 20px 0 10px;
     }
-    .btn-outline {
-      background: white;
-      border: 1.5px solid #667eea;
-      color: #667eea;
-    }
-    .btn-success {
-      background: #48bb78;
-      color: white;
-    }
-    .btn-danger {
-      background: #fc8181;
-      color: white;
-    }
+    .section-title:first-child { margin-top: 0; }
     .user-card {
       background: white;
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      cursor: pointer;
       transition: box-shadow 0.2s;
     }
     .user-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
@@ -112,17 +124,8 @@
       font-weight: 600;
       margin-top: 4px;
     }
-    .user-card .interests {
-      margin-top: 8px;
-      font-size: 0.85em;
-      color: #718096;
-    }
-    .user-card .appearance {
-      margin-top: 6px;
-      font-size: 0.8em;
-      color: #a0aec0;
-      font-style: italic;
-    }
+    .user-card .interests { margin-top: 8px; font-size: 0.85em; color: #718096; }
+    .user-card .appearance { margin-top: 6px; font-size: 0.8em; color: #a0aec0; font-style: italic; }
     .user-card .similarity {
       float: right;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -152,33 +155,7 @@
       font-weight: 600;
       margin-top: 8px;
     }
-    .match-status.pending { background: #fefcbf; color: #975a16; }
     .match-status.matched { background: #c6f6d5; color: #276749; }
-    .match-status.waiting { background: #e9d8fd; color: #553c9a; }
-    .tab-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      display: flex;
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
-      z-index: 100;
-    }
-    .tab-bar button {
-      flex: 1;
-      padding: 12px 0;
-      border: none;
-      background: none;
-      font-size: 0.75em;
-      color: #a0aec0;
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: 600;
-      transition: color 0.2s;
-    }
-    .tab-bar button.active { color: #667eea; }
-    .tab-bar button svg { display: block; margin: 0 auto 2px; }
     .notification-bar {
       position: fixed;
       top: 70px;
@@ -201,47 +178,20 @@
       from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: #a0aec0;
-    }
+    .empty-state { text-align: center; padding: 40px 20px; color: #a0aec0; }
     .empty-state svg { margin-bottom: 12px; }
-    .badge {
-      display: inline-block;
-      background: #fc8181;
-      color: white;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 0.65em;
-      line-height: 18px;
-      text-align: center;
-      position: relative;
-      top: -8px;
-      left: -4px;
-    }
     .config-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 0;
     }
-    .config-row label { margin-bottom: 0; }
-    .config-row select {
-      padding: 6px 12px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 0.9em;
-    }
-    .aikotoba-input-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .aikotoba-input-row input { flex: 1; }
+    .config-row label { margin-bottom: 0; font-weight: 700; }
+    .config-row select { padding: 6px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.9em; }
+    .aikotoba-input-row { display: flex; gap: 8px; margin-top: 8px; }
+    .aikotoba-input-row input { flex: 1; padding: 8px 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.9em; }
+    .aikotoba-input-row input:focus { outline: none; border-color: #667eea; }
     .aikotoba-input-row .btn { flex-shrink: 0; width: auto; }
-    .screen { padding-bottom: 80px; }
     .setup-screen {
       display: flex;
       flex-direction: column;
@@ -249,7 +199,17 @@
       min-height: calc(100vh - 70px);
       padding-bottom: 20px;
     }
-    .loading { text-align: center; padding: 20px; color: #a0aec0; }
+    .profile-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      display: none;
+    }
+    .profile-panel.open { display: block; }
+    .profile-panel p { margin-bottom: 6px; font-size: 0.9em; }
+    .profile-panel .profile-actions { margin-top: 12px; display: flex; gap: 8px; }
   </style>
 </head>
 <body>
@@ -257,68 +217,50 @@
 <div class="header">
   <h1>Aikotoba</h1>
   <small>合言葉でつながろう</small>
+  <button class="header-profile-btn" id="profile-toggle-btn" onclick="toggleProfile()" style="display:none;" title="プロフィール">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
 </div>
 
 <div id="notification" class="notification-bar"></div>
 
-<!-- Setup / Firebase Config Screen -->
 <div id="screen-setup" class="screen active">
   <div class="setup-screen">
     <div class="card">
       <h2>Firebase設定</h2>
-      <p style="font-size:0.85em; color:#718096; margin-bottom:12px;">
-        Firebase Consoleからプロジェクトの設定情報を入力してください。
-      </p>
-      <div class="form-group">
-        <label>API Key</label>
-        <input type="text" id="cfg-apiKey" placeholder="AIza...">
-      </div>
-      <div class="form-group">
-        <label>Auth Domain</label>
-        <input type="text" id="cfg-authDomain" placeholder="project.firebaseapp.com">
-      </div>
-      <div class="form-group">
-        <label>Project ID</label>
-        <input type="text" id="cfg-projectId" placeholder="my-project-id">
-      </div>
+      <p style="font-size:0.85em; color:#718096; margin-bottom:12px;">Firebase Consoleからプロジェクトの設定情報を入力してください。</p>
+      <div class="form-group"><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIza..."></div>
+      <div class="form-group"><label>Auth Domain</label><input type="text" id="cfg-authDomain" placeholder="project.firebaseapp.com"></div>
+      <div class="form-group"><label>Project ID</label><input type="text" id="cfg-projectId" placeholder="my-project-id"></div>
       <button class="btn btn-primary" onclick="saveFirebaseConfig()">接続</button>
     </div>
   </div>
 </div>
 
-<!-- Registration Screen -->
 <div id="screen-register" class="screen">
   <div class="card">
     <h2>プロフィール登録</h2>
-    <div class="form-group">
-      <label>名前 *</label>
-      <input type="text" id="reg-name" placeholder="例: 山田太郎">
-    </div>
-    <div class="form-group">
-      <label>所属 *</label>
-      <input type="text" id="reg-affiliation" placeholder="例: 九州工業大学">
-    </div>
-    <div class="form-group">
-      <label>興味・発表タイトル *</label>
-      <textarea id="reg-interests" placeholder="例: 行動認識、深層学習、IoTセンサ"></textarea>
-    </div>
-    <div class="form-group">
-      <label>見た目の特徴</label>
-      <input type="text" id="reg-appearance" placeholder="例: 青いジャケット、メガネ">
-    </div>
-    <div class="form-group">
-      <label>あなたの合言葉 *</label>
-      <input type="text" id="reg-aikotoba" placeholder="秘密のフレーズ">
-    </div>
+    <div class="form-group"><label>名前 *</label><input type="text" id="reg-name" placeholder="例: 山田太郎"></div>
+    <div class="form-group"><label>所属 *</label><input type="text" id="reg-affiliation" placeholder="例: 九州工業大学"></div>
+    <div class="form-group"><label>興味・発表タイトル *</label><textarea id="reg-interests" placeholder="例: 行動認識、深層学習、IoTセンサ"></textarea></div>
+    <div class="form-group"><label>見た目の特徴</label><input type="text" id="reg-appearance" placeholder="例: 青いジャケット、メガネ"></div>
+    <div class="form-group"><label>あなたの合言葉 *</label><input type="text" id="reg-aikotoba" placeholder="秘密のフレーズ"></div>
     <button class="btn btn-primary" onclick="register()">登録して始める</button>
   </div>
 </div>
 
-<!-- Dashboard Screen -->
-<div id="screen-dashboard" class="screen">
+<div id="screen-main" class="screen">
+  <div id="profile-panel" class="profile-panel">
+    <h2 style="font-size:1.1em; margin-bottom:10px; color:#4a5568;">マイプロフィール</h2>
+    <div id="my-profile"></div>
+    <div class="profile-actions">
+      <button class="btn btn-outline btn-sm" onclick="editProfile()">編集</button>
+      <button class="btn btn-danger btn-sm" onclick="logout()">ログアウト</button>
+    </div>
+  </div>
   <div class="card">
     <div class="config-row">
-      <label style="font-weight:700;">興味が近い人</label>
+      <label>興味が近い人</label>
       <select id="topN" onchange="updateTopN()">
         <option value="3">Top 3</option>
         <option value="5">Top 5</option>
@@ -326,61 +268,24 @@
       </select>
     </div>
   </div>
+  <div id="matched-section"></div>
   <div id="similar-users"></div>
 </div>
 
-<!-- Match Screen -->
-<div id="screen-match" class="screen">
-  <div class="card">
-    <h2>マッチ状況</h2>
-  </div>
-  <div id="match-list"></div>
-</div>
-
-<!-- Profile Screen (self) -->
-<div id="screen-profile" class="screen">
-  <div class="card">
-    <h2>マイプロフィール</h2>
-    <div id="my-profile"></div>
-    <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="editProfile()">編集</button>
-    <button class="btn btn-danger btn-sm" style="margin-top:8px;" onclick="logout()">ログアウト</button>
-  </div>
-</div>
-
-<!-- Tab Bar -->
-<div id="tab-bar" class="tab-bar" style="display:none;">
-  <button onclick="showScreen('dashboard')" id="tab-dashboard" class="active">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-    発見
-  </button>
-  <button onclick="showScreen('match')" id="tab-match">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    マッチ<span id="match-badge"></span>
-  </button>
-  <button onclick="showScreen('profile')" id="tab-profile">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    プロフィール
-  </button>
-</div>
-
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
-let db = null;
-let currentUser = null;
-let allUsers = [];
-let matchRequests = [];
-let matches = [];
-let globalTopN = 5;
-let locationWatchId = null;
-let unsubUsers = null;
-let unsubRequests = null;
-let unsubMatches = null;
+var db = null;
+var currentUser = null;
+var allUsers = [];
+var matches = [];
+var globalTopN = 5;
+var locationWatchId = null;
+var unsubUsers = null;
+var unsubMatches = null;
 
-// --- Default Firebase Config ---
-const DEFAULT_FIREBASE_CONFIG = {
+var DEFAULT_FIREBASE_CONFIG = {
   apiKey: "AIzaSyBMUavNpoos9l8kzcpJ3JwHVjdCYgtIo6w",
   authDomain: "aikotoba-f297b.firebaseapp.com",
   projectId: "aikotoba-f297b",
@@ -390,59 +295,52 @@ const DEFAULT_FIREBASE_CONFIG = {
 };
 
 function saveFirebaseConfig() {
-  const apiKey = document.getElementById('cfg-apiKey').value.trim();
-  const authDomain = document.getElementById('cfg-authDomain').value.trim();
-  const projectId = document.getElementById('cfg-projectId').value.trim();
-  if (!apiKey || !projectId) {
-    alert('API KeyとProject IDは必須です');
-    return;
-  }
-  const config = { apiKey, authDomain: authDomain || projectId + '.firebaseapp.com', projectId };
+  var apiKey = document.getElementById('cfg-apiKey').value.trim();
+  var authDomain = document.getElementById('cfg-authDomain').value.trim();
+  var projectId = document.getElementById('cfg-projectId').value.trim();
+  if (!apiKey || !projectId) { alert('API KeyとProject IDは必須です'); return; }
+  var config = { apiKey: apiKey, authDomain: authDomain || projectId + '.firebaseapp.com', projectId: projectId };
   localStorage.setItem('aikotoba_firebase', JSON.stringify(config));
   initFirebase(config);
 }
 
 function initFirebase(config) {
   try {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(config);
-    }
+    if (!firebase.apps.length) { firebase.initializeApp(config); }
     db = firebase.firestore();
-    const saved = localStorage.getItem('aikotoba_user');
+    var saved = localStorage.getItem('aikotoba_user');
     if (saved) {
       currentUser = JSON.parse(saved);
       startApp();
     } else {
       showScreenOnly('register');
     }
-  } catch (e) {
-    alert('Firebase接続エラー: ' + e.message);
-  }
+  } catch (e) { alert('Firebase接続エラー: ' + e.message); }
 }
 
-// --- Registration ---
 function register() {
-  const name = document.getElementById('reg-name').value.trim();
-  const affiliation = document.getElementById('reg-affiliation').value.trim();
-  const interests = document.getElementById('reg-interests').value.trim();
-  const appearance = document.getElementById('reg-appearance').value.trim();
-  const aikotoba = document.getElementById('reg-aikotoba').value.trim();
-  if (!name || !affiliation || !interests || !aikotoba) {
-    alert('*の項目は必須です');
-    return;
-  }
-  const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-  const userData = {
-    name, affiliation, interests, appearance, aikotoba,
+  var name = document.getElementById('reg-name').value.trim();
+  var affiliation = document.getElementById('reg-affiliation').value.trim();
+  var interests = document.getElementById('reg-interests').value.trim();
+  var appearance = document.getElementById('reg-appearance').value.trim();
+  var aikotoba = document.getElementById('reg-aikotoba').value.trim();
+  if (!name || !affiliation || !interests || !aikotoba) { alert('*の項目は必須です'); return; }
+  var userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+  var userData = {
+    name: name, affiliation: affiliation, interests: interests,
+    appearance: appearance, aikotoba: aikotoba,
     location: null,
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
-  db.collection('users').doc(userId).set(userData).then(() => {
-    currentUser = { id: userId, ...userData };
+  db.collection('users').doc(userId).set(userData).then(function() {
+    currentUser = {
+      id: userId, name: name, affiliation: affiliation,
+      interests: interests, appearance: appearance, aikotoba: aikotoba, location: null
+    };
     localStorage.setItem('aikotoba_user', JSON.stringify(currentUser));
     startApp();
-  }).catch(e => alert('登録エラー: ' + e.message));
+  }).catch(function(e) { alert('登録エラー: ' + e.message); });
 }
 
 function editProfile() {
@@ -452,43 +350,45 @@ function editProfile() {
   document.getElementById('reg-appearance').value = currentUser.appearance || '';
   document.getElementById('reg-aikotoba').value = currentUser.aikotoba || '';
   showScreenOnly('register');
-  const btn = document.querySelector('#screen-register .btn-primary');
+  document.getElementById('profile-toggle-btn').style.display = 'none';
+  var btn = document.querySelector('#screen-register .btn-primary');
   btn.textContent = '更新';
   btn.onclick = updateProfile;
 }
 
 function updateProfile() {
-  const name = document.getElementById('reg-name').value.trim();
-  const affiliation = document.getElementById('reg-affiliation').value.trim();
-  const interests = document.getElementById('reg-interests').value.trim();
-  const appearance = document.getElementById('reg-appearance').value.trim();
-  const aikotoba = document.getElementById('reg-aikotoba').value.trim();
-  if (!name || !affiliation || !interests || !aikotoba) {
-    alert('*の項目は必須です');
-    return;
-  }
-  const updates = {
-    name, affiliation, interests, appearance, aikotoba,
+  var name = document.getElementById('reg-name').value.trim();
+  var affiliation = document.getElementById('reg-affiliation').value.trim();
+  var interests = document.getElementById('reg-interests').value.trim();
+  var appearance = document.getElementById('reg-appearance').value.trim();
+  var aikotoba = document.getElementById('reg-aikotoba').value.trim();
+  if (!name || !affiliation || !interests || !aikotoba) { alert('*の項目は必須です'); return; }
+  var updates = {
+    name: name, affiliation: affiliation, interests: interests,
+    appearance: appearance, aikotoba: aikotoba,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
-  db.collection('users').doc(currentUser.id).update(updates).then(() => {
-    Object.assign(currentUser, updates);
+  db.collection('users').doc(currentUser.id).update(updates).then(function() {
+    currentUser.name = name;
+    currentUser.affiliation = affiliation;
+    currentUser.interests = interests;
+    currentUser.appearance = appearance;
+    currentUser.aikotoba = aikotoba;
     localStorage.setItem('aikotoba_user', JSON.stringify(currentUser));
     startApp();
-  }).catch(e => alert('更新エラー: ' + e.message));
+  }).catch(function(e) { alert('更新エラー: ' + e.message); });
 }
 
 function logout() {
   if (!confirm('ログアウトしますか？')) return;
   if (unsubUsers) unsubUsers();
-  if (unsubRequests) unsubRequests();
   if (unsubMatches) unsubMatches();
   if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
   localStorage.removeItem('aikotoba_user');
   currentUser = null;
-  document.getElementById('tab-bar').style.display = 'none';
+  document.getElementById('profile-toggle-btn').style.display = 'none';
   showScreenOnly('register');
-  const btn = document.querySelector('#screen-register .btn-primary');
+  var btn = document.querySelector('#screen-register .btn-primary');
   btn.textContent = '登録して始める';
   btn.onclick = register;
   document.getElementById('reg-name').value = '';
@@ -498,52 +398,51 @@ function logout() {
   document.getElementById('reg-aikotoba').value = '';
 }
 
-// --- App Start ---
 function startApp() {
-  document.getElementById('tab-bar').style.display = 'flex';
-  showScreen('dashboard');
+  document.getElementById('profile-toggle-btn').style.display = 'flex';
+  showScreenOnly('main');
   startLocationTracking();
   listenUsers();
-  listenMatchRequests();
   listenMatches();
   renderProfile();
 }
 
-// --- Location ---
+function toggleProfile() {
+  var panel = document.getElementById('profile-panel');
+  panel.classList.toggle('open');
+  renderProfile();
+}
+
 function startLocationTracking() {
   if (!navigator.geolocation) return;
-  locationWatchId = navigator.geolocation.watchPosition(pos => {
-    const loc = new firebase.firestore.GeoPoint(pos.coords.latitude, pos.coords.longitude);
+  locationWatchId = navigator.geolocation.watchPosition(function(pos) {
+    var loc = new firebase.firestore.GeoPoint(pos.coords.latitude, pos.coords.longitude);
     db.collection('users').doc(currentUser.id).update({
       location: loc,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     currentUser.location = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-  }, err => {
+  }, function(err) {
     console.warn('Location error:', err.message);
   }, { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 });
 }
 
-// --- Interest Similarity ---
 function tokenize(text) {
-  return text.toLowerCase()
-    .replace(/[、,，。．.・\s]+/g, ' ')
-    .split(' ')
-    .filter(t => t.length > 0);
+  return text.toLowerCase().replace(/[、,，。．.・\s]+/g, ' ').split(' ').filter(function(t) { return t.length > 0; });
 }
 
 function similarity(text1, text2) {
-  const tokens1 = tokenize(text1);
-  const tokens2 = tokenize(text2);
+  var tokens1 = tokenize(text1);
+  var tokens2 = tokenize(text2);
   if (tokens1.length === 0 || tokens2.length === 0) return 0;
-
-  let matchCount = 0;
-  for (const t1 of tokens1) {
-    for (const t2 of tokens2) {
-      if (t1 === t2) { matchCount++; break; }
-      if (t1.length >= 2 && t2.length >= 2 && (t1.includes(t2) || t2.includes(t1))) {
-        matchCount += 0.5;
-        break;
+  var matchCount = 0;
+  for (var i = 0; i < tokens1.length; i++) {
+    for (var j = 0; j < tokens2.length; j++) {
+      if (tokens1[i] === tokens2[j]) { matchCount++; break; }
+      if (tokens1[i].length >= 2 && tokens2[j].length >= 2) {
+        if (tokens1[i].indexOf(tokens2[j]) >= 0 || tokens2[j].indexOf(tokens1[i]) >= 0) {
+          matchCount += 0.5; break;
+        }
       }
     }
   }
@@ -552,292 +451,226 @@ function similarity(text1, text2) {
 
 function haversineDistance(loc1, loc2) {
   if (!loc1 || !loc2) return Infinity;
-  const R = 6371000;
-  const toRad = d => d * Math.PI / 180;
-  const dLat = toRad(loc2.latitude - loc1.latitude);
-  const dLon = toRad(loc2.longitude - loc1.longitude);
-  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(loc1.latitude)) * Math.cos(toRad(loc2.latitude)) * Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var R = 6371000;
+  var toRad = function(d) { return d * Math.PI / 180; };
+  var dLat = toRad(loc2.latitude - loc1.latitude);
+  var dLon = toRad(loc2.longitude - loc1.longitude);
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(toRad(loc1.latitude)) * Math.cos(toRad(loc2.latitude)) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// --- Firestore Listeners ---
+function formatDist(dist) {
+  if (dist >= Infinity) return '';
+  if (dist < 10) return 'すぐ近く';
+  if (dist < 50) return '約' + Math.round(dist / 10) * 10 + 'm';
+  if (dist < 200) return '約' + Math.round(dist / 50) * 50 + 'm';
+  if (dist < 1000) return '約' + Math.round(dist / 100) * 100 + 'm';
+  return '約' + (dist / 1000).toFixed(1) + 'km';
+}
+
 function listenUsers() {
   if (unsubUsers) unsubUsers();
-  unsubUsers = db.collection('users').onSnapshot(snap => {
+  unsubUsers = db.collection('users').onSnapshot(function(snap) {
     allUsers = [];
-    snap.forEach(doc => {
+    snap.forEach(function(doc) {
       if (doc.id === currentUser.id) return;
-      const data = doc.data();
+      var data = doc.data();
       if (data.name === currentUser.name &&
           data.affiliation === currentUser.affiliation &&
           data.aikotoba === currentUser.aikotoba) return;
-      allUsers.push({ id: doc.id, ...data });
+      data.id = doc.id;
+      allUsers.push(data);
     });
-    renderDashboard();
+    renderMain();
     checkProximityNotifications();
   });
-}
-
-function listenMatchRequests() {
-  if (unsubRequests) unsubRequests();
-  unsubRequests = db.collection('match_requests')
-    .where('participants', 'array-contains', currentUser.id)
-    .onSnapshot(snap => {
-      matchRequests = [];
-      snap.forEach(doc => {
-        matchRequests.push({ id: doc.id, ...doc.data() });
-      });
-      renderMatchScreen();
-      checkForCompletedMatches();
-    });
 }
 
 function listenMatches() {
   if (unsubMatches) unsubMatches();
   unsubMatches = db.collection('matches')
     .where('participants', 'array-contains', currentUser.id)
-    .onSnapshot(snap => {
+    .onSnapshot(function(snap) {
       matches = [];
-      snap.forEach(doc => {
-        matches.push({ id: doc.id, ...doc.data() });
+      snap.forEach(function(doc) {
+        var d = doc.data();
+        d.id = doc.id;
+        matches.push(d);
       });
-      renderMatchScreen();
-      updateMatchBadge();
+      renderMain();
     });
 }
 
-// --- Match Logic ---
 function submitAikotoba(targetUserId) {
-  const input = document.getElementById('aikotoba-' + targetUserId);
+  var input = document.getElementById('aikotoba-' + targetUserId);
   if (!input) return;
-  const entered = input.value.trim();
+  var entered = input.value.trim();
   if (!entered) { alert('合言葉を入力してください'); return; }
 
-  const targetUser = allUsers.find(u => u.id === targetUserId);
+  var targetUser = null;
+  for (var i = 0; i < allUsers.length; i++) {
+    if (allUsers[i].id === targetUserId) { targetUser = allUsers[i]; break; }
+  }
   if (!targetUser) { alert('ユーザーが見つかりません'); return; }
 
-  const isCorrect = entered === targetUser.aikotoba;
-
-  const requestId = [currentUser.id, targetUserId].sort().join('_');
-
-  db.collection('match_requests').doc(requestId).get().then(doc => {
-    if (doc.exists) {
-      const existing = doc.data();
-      const updates = {};
-      if (existing.fromUserId === currentUser.id) {
-        updates.fromCorrect = isCorrect;
-        updates.fromWord = entered;
-      } else {
-        updates.toCorrect = isCorrect;
-        updates.toWord = entered;
-      }
-      updates.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-      return db.collection('match_requests').doc(requestId).update(updates);
-    } else {
-      return db.collection('match_requests').doc(requestId).set({
-        fromUserId: currentUser.id,
-        toUserId: targetUserId,
+  var isCorrect = entered === targetUser.aikotoba;
+  if (isCorrect) {
+    var ids = [currentUser.id, targetUserId].sort();
+    var matchId = ids.join('_');
+    var alreadyMatched = false;
+    for (var j = 0; j < matches.length; j++) {
+      if (matches[j].id === matchId) { alreadyMatched = true; break; }
+    }
+    if (!alreadyMatched) {
+      db.collection('matches').doc(matchId).set({
+        user1: currentUser.id,
+        user2: targetUserId,
         participants: [currentUser.id, targetUserId],
-        fromWord: entered,
-        fromCorrect: isCorrect,
-        toWord: null,
-        toCorrect: null,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+        matchedBy: currentUser.id,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function() {
+        showNotification('マッチ成立！' + targetUser.name + 'さんとつながりました！');
+      }).catch(function(e) { alert('エラー: ' + e.message); });
     }
-  }).then(() => {
-    input.value = '';
-    if (isCorrect) {
-      showNotification('合言葉が正しいです！相手の入力を待っています...');
-    } else {
-      showNotification('合言葉が違います。もう一度試してください。');
-    }
-  }).catch(e => alert('エラー: ' + e.message));
+  } else {
+    showNotification('合言葉が違います。もう一度試してください。');
+  }
+  input.value = '';
 }
 
-function checkForCompletedMatches() {
-  matchRequests.forEach(req => {
-    if (req.fromCorrect && req.toCorrect) {
-      const matchId = [req.fromUserId, req.toUserId].sort().join('_');
-      const alreadyMatched = matches.some(m => m.id === matchId);
-      if (!alreadyMatched) {
-        db.collection('matches').doc(matchId).set({
-          user1: req.fromUserId,
-          user2: req.toUserId,
-          participants: [req.fromUserId, req.toUserId],
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-          showNotification('マッチ成立！おめでとうございます！');
-        });
-      }
-    }
-  });
-}
-
-// --- Proximity ---
-let notifiedUsers = new Set();
+var notifiedUsers = {};
 
 function checkProximityNotifications() {
   if (!currentUser.location) return;
-  const PROXIMITY_METERS = 50;
-
-  const similarUsers = getSimilarUsers();
-  similarUsers.forEach(u => {
-    if (!u.location || notifiedUsers.has(u.id)) return;
-    const dist = haversineDistance(currentUser.location, u.location);
-    if (dist < PROXIMITY_METERS) {
-      notifiedUsers.add(u.id);
-      showNotification(u.name + 'さん（' + u.affiliation + '）が近くにいます！「' + u.appearance + '」');
+  var similarUsers = getSimilarUsers();
+  for (var i = 0; i < similarUsers.length; i++) {
+    var u = similarUsers[i];
+    if (!u.location || notifiedUsers[u.id]) continue;
+    var dist = haversineDistance(currentUser.location, u.location);
+    if (dist < 50) {
+      notifiedUsers[u.id] = true;
+      showNotification(u.name + 'さん（' + u.affiliation + '）が近くにいます！「' + (u.appearance || '') + '」');
       if ('Notification' in window && Notification.permission === 'granted') {
         new Notification('Aikotoba', {
-          body: u.name + 'さんが近くにいます！' + (u.appearance ? ' ' + u.appearance : ''),
-          icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🤝</text></svg>'
+          body: u.name + 'さんが近くにいます！' + (u.appearance ? ' ' + u.appearance : '')
         });
       }
     }
-  });
+  }
 }
 
-// --- Rendering ---
 function getSimilarUsers() {
-  const topN = parseInt(document.getElementById('topN')?.value || globalTopN);
-  return allUsers
-    .map(u => ({
-      ...u,
-      sim: similarity(currentUser.interests || '', u.interests || ''),
-      dist: haversineDistance(currentUser.location, u.location),
-      sameAffiliation: (currentUser.affiliation || '').trim() === (u.affiliation || '').trim()
-    }))
-    .filter(u => u.sim > 0)
-    .sort((a, b) => {
-      if (a.sameAffiliation !== b.sameAffiliation) return a.sameAffiliation ? 1 : -1;
-      return b.sim - a.sim;
-    })
-    .slice(0, topN);
+  var topNEl = document.getElementById('topN');
+  var topN = topNEl ? parseInt(topNEl.value) : globalTopN;
+  var result = [];
+  for (var i = 0; i < allUsers.length; i++) {
+    var u = allUsers[i];
+    var sim = similarity(currentUser.interests || '', u.interests || '');
+    if (sim <= 0) continue;
+    var dist = haversineDistance(currentUser.location, u.location);
+    var sameAff = (currentUser.affiliation || '').trim() === (u.affiliation || '').trim();
+    result.push({
+      id: u.id, name: u.name, affiliation: u.affiliation,
+      interests: u.interests, appearance: u.appearance,
+      aikotoba: u.aikotoba, location: u.location,
+      sim: sim, dist: dist, sameAffiliation: sameAff
+    });
+  }
+  result.sort(function(a, b) {
+    if (a.sameAffiliation !== b.sameAffiliation) return a.sameAffiliation ? 1 : -1;
+    return b.sim - a.sim;
+  });
+  return result.slice(0, topN);
 }
 
-function renderDashboard() {
-  const container = document.getElementById('similar-users');
-  const users = getSimilarUsers();
+function renderMain() {
+  renderMatchedSection();
+  renderDiscovery();
+}
 
-  if (users.length === 0) {
-    container.innerHTML = '<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><p>まだ興味が近い人がいません</p><p style="font-size:0.8em">参加者が増えるのを待ちましょう</p></div>';
+function renderMatchedSection() {
+  var container = document.getElementById('matched-section');
+  if (!container) return;
+  if (matches.length === 0) { container.innerHTML = ''; return; }
+
+  var html = '<div class="section-title">マッチ済み</div>';
+  for (var i = 0; i < matches.length; i++) {
+    var m = matches[i];
+    var otherId = m.user1 === currentUser.id ? m.user2 : m.user1;
+    var other = null;
+    for (var j = 0; j < allUsers.length; j++) {
+      if (allUsers[j].id === otherId) { other = allUsers[j]; break; }
+    }
+    if (!other) continue;
+    var dist = haversineDistance(currentUser.location, other.location);
+    var distText = formatDist(dist);
+    html += '<div class="user-card">' +
+      '<div class="match-status matched" style="margin:0 0 8px 0">マッチ成立！</div>' +
+      (distText ? '<span class="distance" style="float:right;margin-top:0;">' + distText + '</span>' : '') +
+      '<div class="name">' + escHtml(other.name) + '</div>' +
+      '<span class="affiliation">' + escHtml(other.affiliation) + '</span>' +
+      '<div class="interests">' + escHtml(other.interests) + '</div>' +
+      (other.appearance ? '<div class="appearance">' + escHtml(other.appearance) + '</div>' : '') +
+      '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function renderDiscovery() {
+  var container = document.getElementById('similar-users');
+  if (!container) return;
+  var users = getSimilarUsers();
+  var unmatchedUsers = [];
+  for (var i = 0; i < users.length; i++) {
+    var matched = false;
+    for (var j = 0; j < matches.length; j++) {
+      if (matches[j].participants && matches[j].participants.indexOf(users[i].id) >= 0) {
+        matched = true; break;
+      }
+    }
+    if (!matched) unmatchedUsers.push(users[i]);
+  }
+
+  if (unmatchedUsers.length === 0 && matches.length === 0) {
+    container.innerHTML = '<div class="empty-state">' +
+      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="2">' +
+      '<circle cx="12" cy="12" r="10"/>' +
+      '<path d="M8 14s1.5 2 4 2 4-2 4-2"/>' +
+      '<line x1="9" y1="9" x2="9.01" y2="9"/>' +
+      '<line x1="15" y1="9" x2="15.01" y2="9"/>' +
+      '</svg>' +
+      '<p>まだ興味が近い人がいません</p>' +
+      '<p style="font-size:0.8em">参加者が増えるのを待ちましょう</p></div>';
     return;
   }
 
-  container.innerHTML = users.map(u => {
-    const simPercent = Math.round(u.sim * 100);
-    let distText = '';
-    if (u.dist < Infinity) {
-      if (u.dist < 10) distText = 'すぐ近く';
-      else if (u.dist < 50) distText = '約' + Math.round(u.dist/10)*10 + 'm';
-      else if (u.dist < 200) distText = '約' + Math.round(u.dist/50)*50 + 'm';
-      else if (u.dist < 1000) distText = '約' + Math.round(u.dist/100)*100 + 'm';
-      else distText = '約' + (u.dist/1000).toFixed(1) + 'km';
-    }
-    const matchReq = matchRequests.find(r => r.participants && r.participants.includes(u.id));
-    const isMatched = matches.some(m => m.participants && m.participants.includes(u.id));
+  if (unmatchedUsers.length === 0) { container.innerHTML = ''; return; }
 
-    let statusHtml = '';
-    if (isMatched) {
-      statusHtml = '<div class="match-status matched">マッチ済み！</div>';
-    } else if (matchReq) {
-      const iSent = matchReq.fromUserId === currentUser.id;
-      const myCorrect = iSent ? matchReq.fromCorrect : matchReq.toCorrect;
-      const theirCorrect = iSent ? matchReq.toCorrect : matchReq.fromCorrect;
-      if (myCorrect && !theirCorrect) {
-        statusHtml = '<div class="match-status waiting">あなたの合言葉は正解！相手の入力待ち...</div>';
-      } else if (!myCorrect && theirCorrect) {
-        statusHtml = '<div class="match-status pending">相手が正解済み！あなたの番です</div>';
-      } else if (myCorrect === false) {
-        statusHtml = '<div class="match-status" style="background:#fed7d7;color:#9b2c2c;">合言葉が違いました。再入力してください</div>';
-      }
-    }
-
-    let aikotobaHtml = '';
-    if (!isMatched) {
-      aikotobaHtml = '<div class="aikotoba-input-row"><input type="text" id="aikotoba-' + u.id + '" placeholder="' + u.name + 'さんの合言葉"><button class="btn btn-sm btn-success" onclick="submitAikotoba(\'' + u.id + '\')">送信</button></div>';
-    }
-
-    return '<div class="user-card">' +
+  var html = matches.length > 0 ? '<div class="section-title">発見</div>' : '';
+  for (var k = 0; k < unmatchedUsers.length; k++) {
+    var u = unmatchedUsers[k];
+    var simPercent = Math.round(u.sim * 100);
+    var distText = formatDist(u.dist);
+    html += '<div class="user-card">' +
       '<span class="similarity">' + simPercent + '% 類似</span>' +
       (distText ? '<span class="distance">' + distText + '</span>' : '') +
       '<div class="name">' + escHtml(u.name) + '</div>' +
       '<span class="affiliation">' + escHtml(u.affiliation) + '</span>' +
       '<div class="interests">' + escHtml(u.interests) + '</div>' +
       (u.appearance ? '<div class="appearance">' + escHtml(u.appearance) + '</div>' : '') +
-      statusHtml +
-      aikotobaHtml +
-      '</div>';
-  }).join('');
-}
-
-function renderMatchScreen() {
-  const container = document.getElementById('match-list');
-
-  const pendingReqs = matchRequests.filter(r => {
-    const matchId = [r.fromUserId, r.toUserId].sort().join('_');
-    return !matches.some(m => m.id === matchId);
-  });
-
-  let html = '';
-
-  if (matches.length > 0) {
-    html += '<div class="card"><h2>マッチ済み</h2></div>';
-    matches.forEach(m => {
-      const otherId = m.user1 === currentUser.id ? m.user2 : m.user1;
-      const other = allUsers.find(u => u.id === otherId);
-      if (other) {
-        html += '<div class="user-card">' +
-          '<div class="match-status matched" style="margin:0 0 8px 0">マッチ成立！</div>' +
-          '<div class="name">' + escHtml(other.name) + '</div>' +
-          '<span class="affiliation">' + escHtml(other.affiliation) + '</span>' +
-          '<div class="interests">' + escHtml(other.interests) + '</div>' +
-          (other.appearance ? '<div class="appearance">' + escHtml(other.appearance) + '</div>' : '') +
-          '</div>';
-      }
-    });
+      '<div class="aikotoba-input-row">' +
+      '<input type="text" id="aikotoba-' + u.id + '" placeholder="' + escHtml(u.name) + 'さんの合言葉">' +
+      "<button class=\"btn btn-sm btn-success\" onclick=\"submitAikotoba('" + u.id + "')\">送信</button>" +
+      '</div></div>';
   }
-
-  if (pendingReqs.length > 0) {
-    html += '<div class="card"><h2>申請中</h2></div>';
-    pendingReqs.forEach(r => {
-      const otherId = r.fromUserId === currentUser.id ? r.toUserId : r.fromUserId;
-      const other = allUsers.find(u => u.id === otherId);
-      if (!other) return;
-      const iSent = r.fromUserId === currentUser.id;
-      const myCorrect = iSent ? r.fromCorrect : r.toCorrect;
-      const theirCorrect = iSent ? r.toCorrect : r.fromCorrect;
-
-      let status = '';
-      if (myCorrect && !theirCorrect) status = '<div class="match-status waiting">あなた: 正解 / 相手: 未入力</div>';
-      else if (!myCorrect && theirCorrect) status = '<div class="match-status pending">相手: 正解 / あなた: 未入力</div>';
-      else if (myCorrect === false) status = '<div class="match-status" style="background:#fed7d7;color:#9b2c2c;">合言葉が違いました</div>';
-
-      let aikotobaHtml = '';
-      if (!myCorrect) {
-        aikotobaHtml = '<div class="aikotoba-input-row"><input type="text" id="aikotoba-' + other.id + '" placeholder="' + other.name + 'さんの合言葉"><button class="btn btn-sm btn-success" onclick="submitAikotoba(\'' + other.id + '\')">送信</button></div>';
-      }
-
-      html += '<div class="user-card">' +
-        '<div class="name">' + escHtml(other.name) + '</div>' +
-        '<span class="affiliation">' + escHtml(other.affiliation) + '</span>' +
-        status + aikotobaHtml +
-        '</div>';
-    });
-  }
-
-  if (!html) {
-    html = '<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><p>まだマッチはありません</p><p style="font-size:0.8em">興味が近い人を見つけて合言葉を交換しよう</p></div>';
-  }
-
   container.innerHTML = html;
 }
 
 function renderProfile() {
-  const container = document.getElementById('my-profile');
-  if (!currentUser) return;
+  var container = document.getElementById('my-profile');
+  if (!currentUser || !container) return;
   container.innerHTML =
     '<p><strong>名前:</strong> ' + escHtml(currentUser.name) + '</p>' +
     '<p><strong>所属:</strong> ' + escHtml(currentUser.affiliation) + '</p>' +
@@ -846,61 +679,35 @@ function renderProfile() {
     '<p><strong>合言葉:</strong> ' + escHtml(currentUser.aikotoba) + '</p>';
 }
 
-function updateMatchBadge() {
-  const badge = document.getElementById('match-badge');
-  if (matches.length > 0) {
-    badge.innerHTML = '<span class="badge">' + matches.length + '</span>';
-  } else {
-    badge.innerHTML = '';
-  }
-}
-
-function updateTopN() {
-  renderDashboard();
-}
-
-// --- Navigation ---
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
-  const tab = document.getElementById('tab-' + name);
-  if (tab) tab.classList.add('active');
-}
+function updateTopN() { renderMain(); }
 
 function showScreenOnly(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
   document.getElementById('screen-' + name).classList.add('active');
 }
 
-// --- Notification ---
 function showNotification(msg) {
-  const el = document.getElementById('notification');
+  var el = document.getElementById('notification');
   el.textContent = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 4000);
+  setTimeout(function() { el.classList.remove('show'); }, 4000);
 }
 
-// --- Utility ---
 function escHtml(str) {
-  const div = document.createElement('div');
+  var div = document.createElement('div');
   div.textContent = str || '';
   return div.innerHTML;
 }
 
-// --- Init ---
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', function() {
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission();
   }
-  const saved = localStorage.getItem('aikotoba_firebase');
-  if (saved) {
-    initFirebase(JSON.parse(saved));
-  } else {
-    initFirebase(DEFAULT_FIREBASE_CONFIG);
-  }
+  var saved = localStorage.getItem('aikotoba_firebase');
+  if (saved) { initFirebase(JSON.parse(saved)); }
+  else { initFirebase(DEFAULT_FIREBASE_CONFIG); }
 });
 </script>
-
 </body>
 </html>
