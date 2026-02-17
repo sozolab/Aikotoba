@@ -367,7 +367,16 @@ let unsubUsers = null;
 let unsubRequests = null;
 let unsubMatches = null;
 
-// --- Firebase Config ---
+// --- Default Firebase Config ---
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBMUavNpoos9l8kzcpJ3JwHVjdCYgtIo6w",
+  authDomain: "aikotoba-f297b.firebaseapp.com",
+  projectId: "aikotoba-f297b",
+  storageBucket: "aikotoba-f297b.firebasestorage.app",
+  messagingSenderId: "82772155270",
+  appId: "1:82772155270:web:37fc7d2b6eb497b5d4ea07"
+};
+
 function saveFirebaseConfig() {
   const apiKey = document.getElementById('cfg-apiKey').value.trim();
   const authDomain = document.getElementById('cfg-authDomain').value.trim();
@@ -865,6 +874,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('aikotoba_firebase');
   if (saved) {
     initFirebase(JSON.parse(saved));
+  } else {
+    initFirebase(DEFAULT_FIREBASE_CONFIG);
   }
 });
 </script>
