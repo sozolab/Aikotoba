@@ -240,8 +240,20 @@
 <div id="screen-register" class="screen">
   <div class="card">
     <h2>プロフィール登録</h2>
-    <div class="form-group"><label>名前 *</label><input type="text" id="reg-name" placeholder="例: 山田太郎"></div>
-    <div class="form-group"><label>所属 *</label><input type="text" id="reg-affiliation" placeholder="例: 九州工業大学"></div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="reg-anonymous" onchange="toggleAnonymousMode()">
+        匿名で参加する
+      </label>
+    </div>
+    <div id="named-fields">
+      <div class="form-group"><label>名前 *</label><input type="text" id="reg-name" placeholder="例: 山田太郎"></div>
+      <div class="form-group"><label>所属 *</label><input type="text" id="reg-affiliation" placeholder="例: 九州工業大学"></div>
+    </div>
+    <div id="anonymous-fields" style="display:none;">
+      <div class="form-group"><label>ニックネーム</label><input type="text" id="reg-nickname" placeholder="例: たろう"></div>
+      <div class="form-group"><label>所属</label><input type="text" id="reg-anon-affiliation" placeholder="例: 九州工業大学"></div>
+    </div>
     <div class="form-group"><label>興味・発表タイトル *</label><textarea id="reg-interests" placeholder="例: 行動認識、深層学習、IoTセンサ"></textarea></div>
     <div class="form-group"><label>見た目の特徴</label><input type="text" id="reg-appearance" placeholder="例: 青いジャケット、メガネ"></div>
     <div class="form-group"><label>あなたの合言葉 *</label><input type="text" id="reg-aikotoba" placeholder="秘密のフレーズ"></div>
@@ -318,17 +330,37 @@ function initFirebase(config) {
   } catch (e) { alert('Firebase接続エラー: ' + e.message); }
 }
 
+function toggleAnonymousMode() {
+  var isAnon = document.getElementById('reg-anonymous').checked;
+  document.getElementById('named-fields').style.display = isAnon ? 'none' : 'block';
+  document.getElementById('anonymous-fields').style.display = isAnon ? 'block' : 'none';
+}
+
 function register() {
-  var name = document.getElementById('reg-name').value.trim();
-  var affiliation = document.getElementById('reg-affiliation').value.trim();
+  var isAnonymous = document.getElementById('reg-anonymous').checked;
   var interests = document.getElementById('reg-interests').value.trim();
   var appearance = document.getElementById('reg-appearance').value.trim();
   var aikotoba = document.getElementById('reg-aikotoba').value.trim();
-  if (!name || !affiliation || !interests || !aikotoba) { alert('*の項目は必須です'); return; }
+
+  var name, affiliation, nickname, anonAffiliation;
+  if (isAnonymous) {
+    nickname = document.getElementById('reg-nickname').value.trim();
+    anonAffiliation = document.getElementById('reg-anon-affiliation').value.trim();
+    name = nickname || '匿名';
+    affiliation = anonAffiliation || '';
+    if (!interests || !aikotoba) { alert('興味と合言葉は必須です'); return; }
+  } else {
+    name = document.getElementById('reg-name').value.trim();
+    affiliation = document.getElementById('reg-affiliation').value.trim();
+    nickname = '';
+    anonAffiliation = '';
+    if (!name || !affiliation || !interests || !aikotoba) { alert('*の項目は必須です'); return; }
+  }
   var userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
   var userData = {
     name: name, affiliation: affiliation, interests: interests,
     appearance: appearance, aikotoba: aikotoba,
+    isAnonymous: isAnonymous, nickname: nickname || '',
     location: null,
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -336,7 +368,9 @@ function register() {
   db.collection('users').doc(userId).set(userData).then(function() {
     currentUser = {
       id: userId, name: name, affiliation: affiliation,
-      interests: interests, appearance: appearance, aikotoba: aikotoba, location: null
+      interests: interests, appearance: appearance, aikotoba: aikotoba,
+      isAnonymous: isAnonymous, nickname: nickname || '',
+      location: null
     };
     localStorage.setItem('aikotoba_user', JSON.stringify(currentUser));
     startApp();
@@ -344,8 +378,16 @@ function register() {
 }
 
 function editProfile() {
-  document.getElementById('reg-name').value = currentUser.name || '';
-  document.getElementById('reg-affiliation').value = currentUser.affiliation || '';
+  var isAnon = currentUser.isAnonymous || false;
+  document.getElementById('reg-anonymous').checked = isAnon;
+  toggleAnonymousMode();
+  if (isAnon) {
+    document.getElementById('reg-nickname').value = currentUser.nickname || '';
+    document.getElementById('reg-anon-affiliation').value = currentUser.affiliation || '';
+  } else {
+    document.getElementById('reg-name').value = currentUser.name || '';
+    document.getElementById('reg-affiliation').value = currentUser.affiliation || '';
+  }
   document.getElementById('reg-interests').value = currentUser.interests || '';
   document.getElementById('reg-appearance').value = currentUser.appearance || '';
   document.getElementById('reg-aikotoba').value = currentUser.aikotoba || '';
@@ -357,15 +399,28 @@ function editProfile() {
 }
 
 function updateProfile() {
-  var name = document.getElementById('reg-name').value.trim();
-  var affiliation = document.getElementById('reg-affiliation').value.trim();
+  var isAnonymous = document.getElementById('reg-anonymous').checked;
   var interests = document.getElementById('reg-interests').value.trim();
   var appearance = document.getElementById('reg-appearance').value.trim();
   var aikotoba = document.getElementById('reg-aikotoba').value.trim();
-  if (!name || !affiliation || !interests || !aikotoba) { alert('*の項目は必須です'); return; }
+
+  var name, affiliation, nickname;
+  if (isAnonymous) {
+    nickname = document.getElementById('reg-nickname').value.trim();
+    var anonAff = document.getElementById('reg-anon-affiliation').value.trim();
+    name = nickname || '匿名';
+    affiliation = anonAff || '';
+    if (!interests || !aikotoba) { alert('興味と合言葉は必須です'); return; }
+  } else {
+    name = document.getElementById('reg-name').value.trim();
+    affiliation = document.getElementById('reg-affiliation').value.trim();
+    nickname = '';
+    if (!name || !affiliation || !interests || !aikotoba) { alert('*の項目は必須です'); return; }
+  }
   var updates = {
     name: name, affiliation: affiliation, interests: interests,
     appearance: appearance, aikotoba: aikotoba,
+    isAnonymous: isAnonymous, nickname: nickname || '',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
   db.collection('users').doc(currentUser.id).update(updates).then(function() {
@@ -374,6 +429,8 @@ function updateProfile() {
     currentUser.interests = interests;
     currentUser.appearance = appearance;
     currentUser.aikotoba = aikotoba;
+    currentUser.isAnonymous = isAnonymous;
+    currentUser.nickname = nickname || '';
     localStorage.setItem('aikotoba_user', JSON.stringify(currentUser));
     startApp();
   }).catch(function(e) { alert('更新エラー: ' + e.message); });
@@ -391,8 +448,12 @@ function logout() {
   var btn = document.querySelector('#screen-register .btn-primary');
   btn.textContent = '登録して始める';
   btn.onclick = register;
+  document.getElementById('reg-anonymous').checked = false;
+  toggleAnonymousMode();
   document.getElementById('reg-name').value = '';
   document.getElementById('reg-affiliation').value = '';
+  document.getElementById('reg-nickname').value = '';
+  document.getElementById('reg-anon-affiliation').value = '';
   document.getElementById('reg-interests').value = '';
   document.getElementById('reg-appearance').value = '';
   document.getElementById('reg-aikotoba').value = '';
@@ -671,12 +732,19 @@ function renderDiscovery() {
 function renderProfile() {
   var container = document.getElementById('my-profile');
   if (!currentUser || !container) return;
-  container.innerHTML =
-    '<p><strong>名前:</strong> ' + escHtml(currentUser.name) + '</p>' +
-    '<p><strong>所属:</strong> ' + escHtml(currentUser.affiliation) + '</p>' +
-    '<p><strong>興味:</strong> ' + escHtml(currentUser.interests) + '</p>' +
-    '<p><strong>特徴:</strong> ' + escHtml(currentUser.appearance || '未設定') + '</p>' +
-    '<p><strong>合言葉:</strong> ' + escHtml(currentUser.aikotoba) + '</p>';
+  var html = '';
+  if (currentUser.isAnonymous) {
+    html += '<p><strong>モード:</strong> 匿名参加</p>';
+    if (currentUser.nickname) html += '<p><strong>ニックネーム:</strong> ' + escHtml(currentUser.nickname) + '</p>';
+    if (currentUser.affiliation) html += '<p><strong>所属:</strong> ' + escHtml(currentUser.affiliation) + '</p>';
+  } else {
+    html += '<p><strong>名前:</strong> ' + escHtml(currentUser.name) + '</p>';
+    html += '<p><strong>所属:</strong> ' + escHtml(currentUser.affiliation) + '</p>';
+  }
+  html += '<p><strong>興味:</strong> ' + escHtml(currentUser.interests) + '</p>';
+  html += '<p><strong>特徴:</strong> ' + escHtml(currentUser.appearance || '未設定') + '</p>';
+  html += '<p><strong>合言葉:</strong> ' + escHtml(currentUser.aikotoba) + '</p>';
+  container.innerHTML = html;
 }
 
 function updateTopN() { renderMain(); }

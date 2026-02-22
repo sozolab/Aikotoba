@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aikotoba - 管制画面</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: #1a202c;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      color: white;
+      padding: 16px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .header h1 { font-size: 1.2em; }
+    .header small { opacity: 0.7; font-size: 0.75em; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: #2d3748;
+      border-radius: 12px;
+      padding: 16px 20px;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+    .stat-card .stat-num { font-size: 2em; font-weight: 700; color: #667eea; }
+    .stat-card .stat-label { font-size: 0.8em; color: #a0aec0; margin-top: 4px; }
+    .card {
+      background: #2d3748;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card h2 { font-size: 1.1em; margin-bottom: 12px; color: #e2e8f0; }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      font-family: inherit;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-danger { background: #fc8181; color: white; }
+    .btn-sm { padding: 8px 16px; font-size: 0.85em; }
+    .participant-list { list-style: none; }
+    .participant-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid #4a5568;
+      font-size: 0.9em;
+    }
+    .participant-item:last-child { border-bottom: none; }
+    .participant-item .p-name { font-weight: 600; }
+    .participant-item .p-affiliation {
+      display: inline-block;
+      background: rgba(102,126,234,0.2);
+      color: #a3bffa;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      margin-left: 8px;
+    }
+    .participant-item .p-badge {
+      display: inline-block;
+      background: rgba(252,129,129,0.2);
+      color: #fc8181;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75em;
+      margin-left: 6px;
+    }
+    .endroll-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* End roll overlay */
+    .endroll-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      z-index: 1000;
+      overflow: hidden;
+    }
+    .endroll-overlay.active { display: block; }
+    .endroll-close {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1100;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .endroll-close:hover { background: rgba(255,255,255,0.3); }
+    .endroll-content {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: white;
+      padding: 0 20px;
+    }
+    .endroll-title {
+      font-size: 2em;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .endroll-subtitle {
+      font-size: 1em;
+      color: #a0aec0;
+      margin-bottom: 40px;
+    }
+    .endroll-entry {
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInEntry 0.8s ease forwards;
+    }
+    .endroll-entry .entry-name {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .endroll-entry .entry-org {
+      font-size: 0.9em;
+      color: #a0aec0;
+      margin-top: 4px;
+    }
+    .endroll-thanks {
+      font-size: 1.6em;
+      font-weight: 700;
+      color: #667eea;
+      margin-top: 60px;
+      opacity: 0;
+      animation: fadeInEntry 1s ease forwards;
+    }
+    @keyframes fadeInEntry {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollUp {
+      from { transform: translateY(0); }
+      to { transform: translateY(var(--scroll-distance)); }
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: #a0aec0;
+      margin-bottom: 4px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #4a5568;
+      border-radius: 8px;
+      font-size: 1em;
+      background: #1a202c;
+      color: #e2e8f0;
+      font-family: inherit;
+    }
+    .form-group input:focus { outline: none; border-color: #667eea; }
+    .setup-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: calc(100vh - 70px);
+      padding-bottom: 20px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .endroll-entry-display {
+      font-size: 1.1em;
+      color: #cbd5e0;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Aikotoba - 管制画面</h1>
+    <small>Control Panel</small>
+  </div>
+</div>
+
+<div id="screen-setup" class="screen active">
+  <div class="setup-screen">
+    <div class="card">
+      <h2>Firebase設定</h2>
+      <p style="font-size:0.85em; color:#a0aec0; margin-bottom:12px;">参加者と同じFirebaseプロジェクトに接続してください。</p>
+      <div class="form-group"><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIza..."></div>
+      <div class="form-group"><label>Auth Domain</label><input type="text" id="cfg-authDomain" placeholder="project.firebaseapp.com"></div>
+      <div class="form-group"><label>Project ID</label><input type="text" id="cfg-projectId" placeholder="my-project-id"></div>
+      <button class="btn btn-primary" style="width:100%;" onclick="saveFirebaseConfig()">接続</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-main" class="screen">
+  <div class="container">
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">総参加者</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-named">0</div>
+        <div class="stat-label">実名参加</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-anon">0</div>
+        <div class="stat-label">匿名参加</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-matches">0</div>
+        <div class="stat-label">マッチ数</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>エンドロール</h2>
+      <p style="font-size:0.85em; color:#a0aec0; margin-bottom:16px;">
+        全参加者（匿名含む）のエンドロールを表示します。<br>
+        実名参加者は組織名で、匿名参加者はニックネームまたは組織名で表示されます。
+      </p>
+      <div class="endroll-actions">
+        <button class="btn btn-primary" id="btn-start-endroll" onclick="startEndRoll()">エンドロール開始</button>
+        <span style="font-size:0.85em; color:#a0aec0;" id="endroll-count"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>参加者一覧</h2>
+      <ul class="participant-list" id="participant-list">
+        <li class="participant-item" style="color:#a0aec0;">読み込み中...</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="endroll-overlay" id="endroll-overlay">
+  <button class="endroll-close" onclick="stopEndRoll()" title="閉じる">&times;</button>
+  <div class="endroll-content" id="endroll-content"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+var db = null;
+var allUsers = [];
+var allMatches = [];
+var unsubUsers = null;
+var unsubMatches = null;
+var endrollAnimationId = null;
+
+var DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBMUavNpoos9l8kzcpJ3JwHVjdCYgtIo6w",
+  authDomain: "aikotoba-f297b.firebaseapp.com",
+  projectId: "aikotoba-f297b",
+  storageBucket: "aikotoba-f297b.firebasestorage.app",
+  messagingSenderId: "82772155270",
+  appId: "1:82772155270:web:37fc7d2b6eb497b5d4ea07"
+};
+
+function saveFirebaseConfig() {
+  var apiKey = document.getElementById('cfg-apiKey').value.trim();
+  var authDomain = document.getElementById('cfg-authDomain').value.trim();
+  var projectId = document.getElementById('cfg-projectId').value.trim();
+  if (!apiKey || !projectId) { alert('API KeyとProject IDは必須です'); return; }
+  var config = { apiKey: apiKey, authDomain: authDomain || projectId + '.firebaseapp.com', projectId: projectId };
+  localStorage.setItem('aikotoba_firebase', JSON.stringify(config));
+  initFirebase(config);
+}
+
+function initFirebase(config) {
+  try {
+    if (!firebase.apps.length) { firebase.initializeApp(config); }
+    db = firebase.firestore();
+    showScreenOnly('main');
+    listenUsers();
+    listenMatches();
+  } catch (e) { alert('Firebase接続エラー: ' + e.message); }
+}
+
+function showScreenOnly(name) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function listenUsers() {
+  if (unsubUsers) unsubUsers();
+  unsubUsers = db.collection('users').onSnapshot(function(snap) {
+    allUsers = [];
+    snap.forEach(function(doc) {
+      var data = doc.data();
+      data.id = doc.id;
+      allUsers.push(data);
+    });
+    renderParticipants();
+    updateStats();
+  });
+}
+
+function listenMatches() {
+  if (unsubMatches) unsubMatches();
+  unsubMatches = db.collection('matches').onSnapshot(function(snap) {
+    allMatches = [];
+    snap.forEach(function(doc) {
+      var d = doc.data();
+      d.id = doc.id;
+      allMatches.push(d);
+    });
+    updateStats();
+  });
+}
+
+function updateStats() {
+  var total = allUsers.length;
+  var anon = 0;
+  for (var i = 0; i < allUsers.length; i++) {
+    if (allUsers[i].isAnonymous) anon++;
+  }
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-named').textContent = total - anon;
+  document.getElementById('stat-anon').textContent = anon;
+  document.getElementById('stat-matches').textContent = allMatches.length;
+  document.getElementById('endroll-count').textContent = total + '名の参加者';
+}
+
+/**
+ * Get the display name for end roll:
+ * - Named participant (isAnonymous=false): show affiliation (organization name)
+ * - Anonymous with nickname: show nickname
+ * - Anonymous with affiliation but no nickname: show affiliation (organization name)
+ * - Anonymous with neither: show "匿名参加者"
+ */
+function getEndRollDisplayName(user) {
+  if (!user.isAnonymous) {
+    // Named participant: show organization name (not personal name)
+    return user.affiliation || user.name;
+  }
+  // Anonymous participant
+  if (user.nickname) return user.nickname;
+  if (user.affiliation) return user.affiliation;
+  return '匿名参加者';
+}
+
+/**
+ * Get subtitle for end roll entry (secondary info)
+ */
+function getEndRollSubtitle(user) {
+  if (!user.isAnonymous) {
+    // For named participants, no additional subtitle needed (already showing org)
+    return '';
+  }
+  // For anonymous with nickname, show affiliation as subtitle if available
+  if (user.nickname && user.affiliation) {
+    return user.affiliation;
+  }
+  return '';
+}
+
+function renderParticipants() {
+  var container = document.getElementById('participant-list');
+  if (allUsers.length === 0) {
+    container.innerHTML = '<li class="participant-item" style="color:#a0aec0;">まだ参加者がいません</li>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < allUsers.length; i++) {
+    var u = allUsers[i];
+    var displayName = u.isAnonymous ? (u.nickname || '匿名') : u.name;
+    var aff = u.affiliation ? '<span class="p-affiliation">' + escHtml(u.affiliation) + '</span>' : '';
+    var badge = u.isAnonymous ? '<span class="p-badge">匿名</span>' : '';
+    var endrollName = getEndRollDisplayName(u);
+    html += '<li class="participant-item">' +
+      '<div><span class="p-name">' + escHtml(displayName) + '</span>' + aff + badge + '</div>' +
+      '<div style="font-size:0.8em;color:#a0aec0;">ER: ' + escHtml(endrollName) + '</div>' +
+      '</li>';
+  }
+  container.innerHTML = html;
+}
+
+function startEndRoll() {
+  if (allUsers.length === 0) { alert('参加者がいません'); return; }
+
+  var overlay = document.getElementById('endroll-overlay');
+  var content = document.getElementById('endroll-content');
+  overlay.classList.add('active');
+
+  // Build end roll entries
+  var entries = [];
+  for (var i = 0; i < allUsers.length; i++) {
+    entries.push({
+      name: getEndRollDisplayName(allUsers[i]),
+      subtitle: getEndRollSubtitle(allUsers[i])
+    });
+  }
+
+  // Shuffle entries for variety
+  for (var j = entries.length - 1; j > 0; j--) {
+    var k = Math.floor(Math.random() * (j + 1));
+    var temp = entries[j];
+    entries[j] = entries[k];
+    entries[k] = temp;
+  }
+
+  // Build HTML
+  var html = '<div class="endroll-title">Aikotoba</div>';
+  html += '<div class="endroll-subtitle">ご参加ありがとうございました</div>';
+  for (var m = 0; m < entries.length; m++) {
+    html += '<div class="endroll-entry" style="animation-delay:' + (m * 0.3) + 's;">';
+    html += '<div class="entry-name">' + escHtml(entries[m].name) + '</div>';
+    if (entries[m].subtitle) {
+      html += '<div class="entry-org">' + escHtml(entries[m].subtitle) + '</div>';
+    }
+    html += '</div>';
+  }
+  html += '<div class="endroll-thanks" style="animation-delay:' + (entries.length * 0.3 + 0.5) + 's;">Thank you!</div>';
+  content.innerHTML = html;
+
+  // Calculate scroll distance
+  var viewH = window.innerHeight;
+  // Start from bottom of screen, scroll up to show all content
+  content.style.top = viewH + 'px';
+
+  // Wait a moment for DOM render, then start scroll animation
+  setTimeout(function() {
+    var contentH = content.scrollHeight;
+    var totalDist = viewH + contentH;
+    var duration = Math.max(entries.length * 2, 10); // at least 10s
+    content.style.setProperty('--scroll-distance', '-' + totalDist + 'px');
+    content.style.animation = 'scrollUp ' + duration + 's linear forwards';
+  }, 100);
+}
+
+function stopEndRoll() {
+  var overlay = document.getElementById('endroll-overlay');
+  var content = document.getElementById('endroll-content');
+  overlay.classList.remove('active');
+  content.style.animation = '';
+  content.innerHTML = '';
+}
+
+function escHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem('aikotoba_firebase');
+  if (saved) { initFirebase(JSON.parse(saved)); }
+  else { initFirebase(DEFAULT_FIREBASE_CONFIG); }
+});
+
+// Close end roll with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') stopEndRoll();
+});
+</script>
+</body>
+</html>
